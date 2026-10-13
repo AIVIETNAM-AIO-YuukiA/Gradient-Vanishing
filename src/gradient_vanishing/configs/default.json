@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "sequence_lengths": [10, 30, 100],
+  "model_names": ["Vanilla RNN", "LSTM", "GRU"],
+  "seeds": [0, 1, 2, 3, 4],
+  "training": {
+    "updates": 300,
+    "tuning_updates": 150,
+    "batch_size": 128,
+    "evaluation_interval": 10,
+    "evaluation_size": 2048,
+    "gradient_capture_updates": [0, 50, 150, 299]
+  },
+  "split_seeds": {"validation": 10000, "test": 20000, "tuning_offset": 1000},
+  "default_hyperparameters": {"learning_rate": 0.001, "hidden_size": 32, "initialization": "default"},
+  "main_gate_mode": "one",
+  "tuning": {
+    "trials": 20,
+    "learning_rate_min": 0.0001,
+    "learning_rate_max": 0.05,
+    "learning_rate_log": true,
+    "hidden_sizes": [16, 32, 64],
+    "initializations": ["orthogonal", "xavier", "default"],
+    "sampler_seed": 42,
+    "pruner_startup_trials": 5,
+    "pruner_warmup_steps": 50
+  },
+  "ablation": {"sequence_lengths": [100], "gate_modes": ["zero", "one", "chrono"], "validation_threshold": 0.01},
+  "gradients": {
+    "initial_seeds": 10,
+    "sweep_seeds": 5,
+    "sweep_sequence_length": 100,
+    "sweep_biases": [-4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+  },
+  "device": "auto",
+  "output_dir": "results"
+}
