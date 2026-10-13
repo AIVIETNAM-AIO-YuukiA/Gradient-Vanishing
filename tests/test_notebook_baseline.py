@@ -37,7 +37,9 @@ def _compare(observed, reference, tolerance, *, exact=False):
     if isinstance(reference, dict):
         assert observed.keys() == reference.keys()
         for key in reference:
-            _compare(observed[key], reference[key], tolerance, exact=exact or key == "initial_parameters")
+            parameter_field = key in {"initial_parameters", "target_gate_weight", "target_gate_bias",
+                                      "reset_gate_bias", "input_gate_bias"}
+            _compare(observed[key], reference[key], tolerance, exact=exact or parameter_field)
     elif isinstance(reference, list):
         assert len(observed) == len(reference)
         for actual, expected in zip(observed, reference):
@@ -61,9 +63,14 @@ def test_fixture_schema_provenance_and_checksums(baseline):
     assert hashlib.sha256((ROOT / committed["source"]["notebook"]).read_bytes()).hexdigest() == NOTEBOOK_HASH
     assert committed["source"]["source_snapshot_commit"] == "72418d9241b81e8ffefc73c917eab6663413cb10"
     assert committed["source"]["saved_notebook_outputs"] == "historical_unverified_not_used"
+    assert committed["source"]["executed_cell_indices"] == fresh["source"]["executed_cell_indices"] == [3, 5, 7, 9, 11, 13]
     assert committed["environment"]["device"] == "cpu"
     assert committed["environment"]["torch_deterministic_algorithms"] is True
     assert committed["environment"]["dependency_versions"] == fresh["environment"]["dependency_versions"]
+    for field in ("python", "torch_runtime_version", "torch_cuda_runtime", "device",
+                  "torch_deterministic_algorithms", "cublas_workspace_config",
+                  "cuda_visible_devices", "torch_threads"):
+        assert committed["environment"][field] == fresh["environment"][field], field
     for document in (committed, fresh):
         assert document["integrity_sha256"] == _canonical_digest({k: v for k, v in document.items() if k != "integrity_sha256"})
         for case in document["cases"]:
@@ -93,6 +100,7 @@ def test_fresh_execution_matches_committed_numerical_oracle(baseline):
                              else {"rtol": 1e-5, "atol": 1e-6})
         _compare(observed["input"], reference["input"], tolerance)
         _compare(observed["expected"], reference["expected"], tolerance)
+    assert len(committed["cases"]) == len(fresh["cases"]) == len({case["id"] for case in fresh["cases"]})
 
 
 def test_data_model_and_training_observations_are_complete(baseline):
