@@ -27,4 +27,6 @@ Training batches use Torch's global RNG after the caller seeds the run. `generat
 
 Validation and test sets use separate CPU generators seeded from the validated configuration (defaults `10000` and `20000`), so creating them does not advance the training RNG. Their default size is `2048` each. Repeated requests return the cached tensors for the same sequence length and effective fixed-set settings; changed size, seeds, or device get separate cache entries. As in the notebook, callers receive the cached tensor objects directly.
 
+The notebook's cache used only `T` as its key because its fixed-set settings were global constants. The project also keys by effective size, seeds, and device so a later configured run cannot reuse stale tensors. With notebook-default settings, the observable per-length cache behavior is the same.
+
 The [baseline fixture](../tests/fixtures/notebook_baseline.json) is the immutable regression oracle for the default `T=10` data case. [Ticket 03 tests](../tests/test_data.py) compare the generated tensors, fixed-set checksums, and RNG state with that original-notebook capture. The source notebook and fixture remain unchanged.
