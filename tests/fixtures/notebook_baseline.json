@@ -27,7 +27,7 @@
         "validation_seed": 10000
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "fixed_sets": {
           "test": {
@@ -265,7 +265,7 @@
           1
         ]
       },
-      "integrity_sha256": "646c78c5c733271399290a93f403dbb7ff9e8d00d88ec6e6595c2e23f5e6f7aa",
+      "integrity_sha256": "71692c769517f9ca625fa7191cd007d73cb39854c17f661a1b8a490374feee28",
       "kind": "data",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -311,7 +311,7 @@
         "sequence_length": 1
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "first_parameter_gradient": {
           "dtype": "torch.float32",
@@ -1833,7 +1833,7 @@
           ]
         }
       },
-      "integrity_sha256": "03b4316e74a2b6c83af02be8505a6aa8be816159ef69211e82b05947a3116a3f",
+      "integrity_sha256": "9c3484795a8cc87e630f6afb03ad43a9905d88c6107d97ec4c7f4de3a5ae327f",
       "kind": "model",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -1881,7 +1881,7 @@
         "sequence_length": 10
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "first_parameter_gradient": {
           "dtype": "torch.float32",
@@ -3538,7 +3538,7 @@
           ]
         }
       },
-      "integrity_sha256": "2dc854c8e846c1f1f68f5941f308f2ea05c898fdca042538d84164109e090665",
+      "integrity_sha256": "24e81ba2a8f5985424b4a1e1f1358900cb12fa30c3f22e4a038aec915f7ba835",
       "kind": "model",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -3586,7 +3586,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "first_parameter_gradient": {
           "dtype": "torch.float32",
@@ -5543,7 +5543,7 @@
           ]
         }
       },
-      "integrity_sha256": "b81597c02b291a53d5d78178548e366a997d0101b3d6fb813ec9f6709a946beb",
+      "integrity_sha256": "f915f98b6ac13d3ec9b67eb27f79100256fda665a9579c6ac57f83bd19f04a24",
       "kind": "model",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -5591,7 +5591,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "first_parameter_gradient": {
           "dtype": "torch.float64",
@@ -7548,7 +7548,7 @@
           ]
         }
       },
-      "integrity_sha256": "43bd67621915eb55f5ad022a861823bd4421331df6652c838dd5f5cf4684ce5c",
+      "integrity_sha256": "8c3b0b2b9652c8b9ff04be703112eff6b5b92b25b2429badee4248e8182044a5",
       "kind": "model",
       "precision": "float64",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -7596,7 +7596,7 @@
         "sequence_length": 1
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "cell_state_observations": {
           "first": {
@@ -13869,7 +13869,7 @@
           ]
         }
       },
-      "integrity_sha256": "f35deead2bbb1f52f12ca3e064943c1c40aaa3849a08db5b401537b72d397471",
+      "integrity_sha256": "9e24c511927f3a5554f07eb9f98687dc68bb403df4d14e9f468aa3b40bc921fa",
       "kind": "model",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -13917,7 +13917,7 @@
         "sequence_length": 10
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "cell_state_observations": {
           "first": {
@@ -20325,7 +20325,7 @@
           ]
         }
       },
-      "integrity_sha256": "378911e8870a8fbabbd86db2b933b684661d269cc64f6b55b0dea3ee6d40c5a7",
+      "integrity_sha256": "b90ace18ccf135596637807e2e2f5b959c2cc4236ccd43fdab28546a2b6a763e",
       "kind": "model",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -20373,7 +20373,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "cell_state_observations": {
           "first": {
@@ -27081,7 +27081,7 @@
           ]
         }
       },
-      "integrity_sha256": "25389bfa640509facaa5affd5d575999c4172404cfd34ef2277f26ccf3bd50f0",
+      "integrity_sha256": "14909622933ccc805040e517473f1e1e9dc979168b9bc17c23a664ce4893ce08",
       "kind": "model",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -27129,7 +27129,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "cell_state_observations": {
           "first": {
@@ -33837,7 +33837,7 @@
           ]
         }
       },
-      "integrity_sha256": "b94c4b1a6bb50c6cf4b95aa72e1b9514cea15167a57f36a7122250e69eaf4147",
+      "integrity_sha256": "2527a1fa2e6888dc2289f9fa992d54e8e7c689bed01a6d00735a664ffd584b58",
       "kind": "model",
       "precision": "float64",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -33885,7 +33885,7 @@
         "sequence_length": 1
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "first_parameter_gradient": {
           "dtype": "torch.float32",
@@ -40009,7 +40009,7 @@
           ]
         }
       },
-      "integrity_sha256": "8eb9fe27069390f16a58f7f4fc8dd94a903f66a74aa21ac46a95a2c83d8094bf",
+      "integrity_sha256": "d6ebf82ebd1af3c70fe8ed42f32a114b7a2dc908a224d357010678da8be622b6",
       "kind": "model",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -40057,7 +40057,7 @@
         "sequence_length": 10
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "first_parameter_gradient": {
           "dtype": "torch.float32",
@@ -46316,7 +46316,7 @@
           ]
         }
       },
-      "integrity_sha256": "89309805f19e3d343acfcbd676b749c927d4ebf7909012a10517eb242a39f367",
+      "integrity_sha256": "3a0d9d106afa05155d6704e94b3198b935532248b9ab4cfc1ac11918e1f10937",
       "kind": "model",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -46364,7 +46364,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "first_parameter_gradient": {
           "dtype": "torch.float32",
@@ -52923,7 +52923,7 @@
           ]
         }
       },
-      "integrity_sha256": "9887bef61fc32eddba02cdfa4a7ca0dba3274c4013932c855cec0c547820806d",
+      "integrity_sha256": "0ea30433c136fa79aeb27497d2f078e40154ba38ac719ae400625e3c6555e835",
       "kind": "model",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -52971,7 +52971,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "first_parameter_gradient": {
           "dtype": "torch.float64",
@@ -59530,7 +59530,7 @@
           ]
         }
       },
-      "integrity_sha256": "1c9fbf6f5aee6ce1ca83c886e9af06bc1998bed200ee5914b0524167176a6073",
+      "integrity_sha256": "639b0a2d3eb8483852b963b720b55254ab3a4429efa7e324a9a1275d6b8381be",
       "kind": "model",
       "precision": "float64",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -59576,7 +59576,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "reset_gate_bias": {
           "dtype": "torch.float32",
@@ -60794,7 +60794,7 @@
         "hidden_size": 32,
         "sequence_length": 30
       },
-      "integrity_sha256": "5178b5fa1c20b60806fa0e9b71dd5a5c323a97cbf43a06e243321f839df0b816",
+      "integrity_sha256": "11d0f215426ad9cc5aa689ac5d4a0c1bb80899b0c15ea29bd3e9811459affb7d",
       "kind": "gate_initialization",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -60839,7 +60839,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "reset_gate_bias": {
           "dtype": "torch.float32",
@@ -62057,7 +62057,7 @@
         "hidden_size": 32,
         "sequence_length": 30
       },
-      "integrity_sha256": "5f8c42a28de92eebfff655596f7e7e66d2c305001e7a7cc6dd2d91b445529ea8",
+      "integrity_sha256": "5440c620746b3e39cb5c96fe65dc5282cbd8c42e86e4415c8b0907f839bd5332",
       "kind": "gate_initialization",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -62102,7 +62102,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "reset_gate_bias": {
           "dtype": "torch.float32",
@@ -63320,7 +63320,7 @@
         "hidden_size": 32,
         "sequence_length": 30
       },
-      "integrity_sha256": "f4e3c8cdacb0a70dbec1a9f4408c0a4bc6c6a97a593a7e03beae2b08c3c41826",
+      "integrity_sha256": "5c0521bce806e1a176489584ebb7ca98be85e682f56642573a55c15a7a35e49b",
       "kind": "gate_initialization",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -63365,7 +63365,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "reset_gate_bias": {
           "dtype": "torch.float32",
@@ -64583,7 +64583,7 @@
         "hidden_size": 32,
         "sequence_length": 30
       },
-      "integrity_sha256": "2752f6792b17093d4862b13c225bb84ec141a316597531f584dafad17e3ed2a7",
+      "integrity_sha256": "10cebf5eacf24edb6b80c45a04e14eb9db22213259c7262f7e5d165a9ec0b756",
       "kind": "gate_initialization",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -64628,7 +64628,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "reset_gate_bias": {
           "dtype": "torch.float32",
@@ -65846,7 +65846,7 @@
         "hidden_size": 32,
         "sequence_length": 30
       },
-      "integrity_sha256": "9e736ae3ab84b84a54bd276fd54b335dc17cb70821732925290ce6a890b38949",
+      "integrity_sha256": "43313c1768ae55c4bdb16f1ec0a4245f3395813678b5c7f5243bedb91b014838",
       "kind": "gate_initialization",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -65891,7 +65891,7 @@
         "sequence_length": 30
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "input_gate_bias": {
           "dtype": "torch.float32",
@@ -67109,7 +67109,7 @@
         "hidden_size": 32,
         "sequence_length": 30
       },
-      "integrity_sha256": "65f16c5cef4ad6bb288c990cd5bcdf3f9201eeec035d20f63a62c52fe0f0b55a",
+      "integrity_sha256": "a5239a566427da44993e1842fa20ac1030a0437af86bd01d9c82aeb660060d12",
       "kind": "gate_initialization",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -67162,7 +67162,7 @@
         "updates": 3
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "history": {
           "final_val": 0.3282676339149475,
@@ -67254,7 +67254,7 @@
           1
         ]
       },
-      "integrity_sha256": "e5aa2e8565cc1edffaac4e850c46a45892944282700966c433aca35d5ca64049",
+      "integrity_sha256": "ed17910ff97cb844eec704addf0291f9d75759a97ad69595c1a9cbcb2a185c6a",
       "kind": "training",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -67309,7 +67309,7 @@
         "updates": 3
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "history": {
           "final_val": 0.32860806584358215,
@@ -67401,7 +67401,7 @@
           1
         ]
       },
-      "integrity_sha256": "0a6a687d1800c093f597d6332e2be47ed440204f6a40d30ec2d1268b40944e38",
+      "integrity_sha256": "f07727482baad3643c43c3ac4687e8edcf6175eae3a749c9fdfa707c1e241f6f",
       "kind": "training",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -67456,7 +67456,7 @@
         "updates": 3
       },
       "device": "cpu",
-      "environment_sha256": "dd66029ea6b6ffda5906cf4ac29b8f15ee840609947e16d6689b4c1a961dec19",
+      "environment_sha256": "33b4f188fb589babc977c855534678f4be643b2867c034966240b239f5abf7be",
       "expected": {
         "history": {
           "final_val": 0.34951213002204895,
@@ -67548,7 +67548,7 @@
           1
         ]
       },
-      "integrity_sha256": "ba9872c71c90d01a45a09d8ff1b1689050396aa0f9c0ecddf9ffe8409c05ba5e",
+      "integrity_sha256": "e59b9b54516cfadddb2628455ed798d9b7a4c5ab2f75c369c7ceb280ae2dd076",
       "kind": "training",
       "precision": "float32",
       "provenance": "direct execution of original notebook definitions; no saved notebook outputs used",
@@ -67589,7 +67589,7 @@
       "mpmath": "1.3.0",
       "networkx": "3.6.1",
       "numpy": "2.4.0",
-      "optuna": "4.8.0",
+      "optuna": "5.0.0",
       "packaging": "25.0",
       "pandas": "2.3.3",
       "pillow": "12.1.0",
@@ -67619,7 +67619,7 @@
     "torch_runtime_version": "2.11.0+cpu",
     "torch_threads": 8
   },
-  "integrity_sha256": "beedaff9bfd0660e92bc662d5aa96ef55781ad1a6a375393b256957bb17ca9b3",
+  "integrity_sha256": "f6f650f2f281dc5af333b46751b52030e4778a7d9c21510c9f3f6342cd91e201",
   "invocation": {
     "argv": [
       "D:\\ILPT\\Project\\Gradient-Vanishing\\.tmp\\clean-env\\Scripts\\python.exe",

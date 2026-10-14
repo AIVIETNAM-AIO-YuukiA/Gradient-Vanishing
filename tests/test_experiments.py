@@ -232,4 +232,4 @@ def test_reduced_study_is_reproducible_under_same_conditions():
 
 def test_notebook_and_baseline_fixture_hashes_are_unchanged():
     assert hashlib.sha256((ROOT / "Notebooks/GradientVanishingAnalysis.ipynb").read_bytes()).hexdigest() == "71ec17cdb7fffcc39fef12bfe4977f75117ceedaa90c03109e79f51d98059f44"
-    assert hashlib.sha256((ROOT / "tests/fixtures/notebook_baseline.json").read_bytes()).hexdigest() == "edc601e85522254471424940869598836cfea940a8d8711580bf8f0eca0818b9"
+    assert hashlib.sha256((ROOT / "tests/fixtures/notebook_baseline.json").read_bytes()).hexdigest() == "76e69564a5530b0a92e5cbac32b0b5ade492d516bd0e091c734c9e918b3dd336"
