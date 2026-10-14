@@ -1,5 +1,7 @@
 # Install and check configuration
 
+For the implemented experiment and report commands, see [commands.md](commands.md).
+
 This package is being extracted from the unchanged [source notebook](../Notebooks/GradientVanishingAnalysis.ipynb). Ticket 01 provides only project installation and validated experiment configuration. The notebook remains the algorithmic baseline; saved notebook outputs are not independently verified results.
 
 ## Reference CPU environment

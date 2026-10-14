@@ -20,6 +20,9 @@ dependencies = [
 [project.optional-dependencies]
 test = ["pytest==9.1.1"]
 
+[project.scripts]
+gradient-vanishing = "gradient_vanishing.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
