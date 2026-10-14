@@ -1,4 +1,4 @@
-"""Notebook-equivalent tuning, main comparison, and ablation (cells 15, 17, 27)."""
+"""Notebook-equivalent tuning, comparison, ablation, and sweep."""
 
 from __future__ import annotations
 
@@ -439,5 +439,96 @@ def run_gate_ablation(
 
 def save_gate_ablation(path: str | Path, result: AblationResult) -> None:
     """Write the raw ablation and its provenance as strict JSON."""
+    Path(path).write_text(json.dumps(result.record, indent=2, allow_nan=False) + "\n",
+                          encoding="utf-8")
+
+
+@dataclass
+class SweepResult:
+    record: dict[str, Any]
+
+
+class SweepInterruptedError(RuntimeError):
+    """A sweep stopped; ``result`` retains completed and failed points."""
+
+    def __init__(self, message: str, result: SweepResult) -> None:
+        super().__init__(message)
+        self.result = result
+
+
+def run_retention_bias_sweep(
+    config: Mapping[str, Any] | None = None,
+    *,
+    device: str | torch.device | None = None,
+) -> SweepResult:
+    """Run notebook cell 28: model outer loop, numeric bias inner loop."""
+    effective_config = copy.deepcopy(config if config is not None else load_config())
+    selected_device = str(device) if device is not None else effective_config["device"]
+    if selected_device == "auto":
+        selected_device = "cuda" if torch.cuda.is_available() else "cpu"
+    gradients = effective_config["gradients"]
+    length = gradients["sweep_sequence_length"]
+    biases = gradients["sweep_biases"]
+    seeds = list(range(gradients["sweep_seeds"]))
+    params = {
+        "lr": effective_config["default_hyperparameters"]["learning_rate"],
+        "hidden_size": effective_config["default_hyperparameters"]["hidden_size"],
+        "init_method": effective_config["default_hyperparameters"]["initialization"],
+    }
+    record: dict[str, Any] = {
+        "schema_version": 1, "status": "running", "configuration": effective_config,
+        "model_order": ["LSTM", "GRU"], "bias_order": list(biases),
+        "sequence_length": length, "seed_order": seeds,
+        "hyperparameters": params, "results": {"LSTM": [], "GRU": []},
+        "theoretical_reference_line": [[0.0, 0.0], [1.0, 1.0]],
+        "measurement": "float64 initial hidden-state gradient decay, no training or test evaluation",
+        "python_version": sys.version.split()[0], "torch_version": torch.__version__,
+        "optuna_version": optuna.__version__, "device": selected_device,
+        "dtype": "torch.float64", "notebook_sha256": NOTEBOOK_SHA256,
+    }
+    result = SweepResult(record)
+    name: str | None = None
+    bias: float | None = None
+    try:
+        for name in ("LSTM", "GRU"):
+            gate_parameter = "W_f.bias" if name == "LSTM" else "W_z.bias"
+            sign = 1 if name == "LSTM" else -1
+            for configured_bias in biases:
+                bias = float(configured_bias)
+                point = {
+                    "model": name, "sequence_length": length, "retention_bias": bias,
+                    "theoretical_retention": float(1 / (1 + np.exp(-bias))),
+                    "gate_parameter": gate_parameter, "retention_bias_sign": sign,
+                    "assigned_gate_bias": [sign * bias] * params["hidden_size"],
+                    "seeds": seeds, "hyperparameters": dict(params),
+                    "status": "running", "initial_gradients": None,
+                    "decay_mean": None, "decay_sample_std": None,
+                }
+                record["results"][name].append(point)
+                initial = measure_init_gradients(
+                    name, length, effective_config, gate_mode=bias,
+                    n_seeds=gradients["sweep_seeds"], hyperparameters=params,
+                    device=selected_device,
+                )
+                point.update({"initial_gradients": asdict(initial),
+                              "decay_mean": initial.decay_mean,
+                              "decay_sample_std": initial.decay_sample_std,
+                              "status": "complete"})
+        record["status"] = "complete"
+    except Exception as error:
+        record["status"] = "incomplete"
+        if name is not None and record["results"][name]:
+            record["results"][name][-1]["status"] = "failed"
+        record["failure"] = {"model": name, "retention_bias": bias,
+                             "error_type": type(error).__name__, "message": str(error)}
+        raise SweepInterruptedError(str(error), result) from error
+    finally:
+        record["final_torch_rng_sha256"] = hashlib.sha256(
+            torch.get_rng_state().numpy().tobytes()).hexdigest()
+    return result
+
+
+def save_retention_bias_sweep(path: str | Path, result: SweepResult) -> None:
+    """Write raw numeric sweep data without plotting or rerunning models."""
     Path(path).write_text(json.dumps(result.record, indent=2, allow_nan=False) + "\n",
                           encoding="utf-8")
