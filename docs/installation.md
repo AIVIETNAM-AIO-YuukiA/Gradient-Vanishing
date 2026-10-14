@@ -1,30 +1,39 @@
-# Install and check configuration
+# Install the pinned CPU environment
 
-For the implemented experiment and report commands, see [commands.md](commands.md).
-
-This package is being extracted from the unchanged [source notebook](../Notebooks/GradientVanishingAnalysis.ipynb). Ticket 01 provides only project installation and validated experiment configuration. The notebook remains the algorithmic baseline; saved notebook outputs are not independently verified results.
-
-## Reference CPU environment
-
-Use Python 3.13 on a CPU machine. The reference environment was resolved on Windows with Python 3.13.0. Install the exact versions in `requirements-cpu.lock`, then the package:
+The reference environment was verified on Windows 11 with Python 3.13.0 and
+CPU PyTorch 2.11.0+cpu. From the project checkout, these commands create a
+fresh environment, install the exact [CPU lock file](../requirements-cpu.lock),
+build a non-editable wheel, and install it:
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\python -m pip install -r requirements-cpu.lock
-.venv\Scripts\python -m pip install --no-deps .
-.venv\Scripts\python -m gradient_vanishing.config
+py -3.13 -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements-cpu.lock
+.venv\Scripts\python.exe -m pip wheel --no-deps --no-build-isolation --wheel-dir dist .
+.venv\Scripts\python.exe -m pip install --no-deps dist/gradient_vanishing_research-0.1.0-py3-none-any.whl
+.venv\Scripts\python.exe -m pip check
+.venv\Scripts\gradient-vanishing.exe --help
+.venv\Scripts\python.exe -m gradient_vanishing --help
 ```
 
-The lock file records the installed direct dependencies and their active transitive dependencies for this reference environment. Python and platform matter for Torch wheels; use a CPU Torch build matching the pinned version if the platform's default wheel includes CUDA support. CUDA is not part of this reference environment. Future CUDA runs must record the CUDA runtime and hardware in run metadata.
-
-The package default is `src/gradient_vanishing/configs/default.json`. It is bundled into installed wheels, so the config check works outside the checkout. A partial JSON file overrides only its named keys:
+The pinned lock records 38 exact dependency versions, including NumPy 2.4.0,
+Optuna 4.8.0, and Matplotlib 3.10.8. A wheel-installed import and both CLI
+help commands were verified from outside the checkout. The default JSON is
+bundled in the wheel; verify it with:
 
 ```powershell
-python -m gradient_vanishing.config path/to/partial.json
+.venv\Scripts\python.exe -m gradient_vanishing.config
 ```
 
-Code that invokes a run can call `load_config(path, overrides)`; precedence is command overrides, then file values, then package defaults. Unknown keys and invalid values raise `ConfigError`. The JSON schema version is `1`. The notebook's `EPOCHS` means optimizer updates here; `gradient_capture_updates` remains zero-based to match the notebook loop. No experiment entry point is implemented in Ticket 01.
+The package defaults reproduce the notebook's audited settings, including
+three sequence lengths, three models, five comparison seeds, 20 Optuna trials
+per study, 300 final training updates, and 150 tuning updates. This command
+prints the effective defaults without starting an experiment. An explicit
+partial configuration file and repeatable `--set KEY=JSON` options override
+only named values; unknown keys and invalid values fail validation.
 
-Future experiment entry points should call `prepare_runtime(config)` before importing Torch. For `auto` or `cuda`, it sets the notebook's `CUBLAS_WORKSPACE_CONFIG=:4096:8`; calling it after Torch import raises `ConfigError`. Torch deterministic algorithms and seeding belong to the later runtime ticket.
-
-Run the focused checks with `python -m pytest tests/test_config.py -q`.
+See [commands.md](commands.md) for the supported stages, a reduced-run example,
+output paths, and the full-run safeguard. See [Ticket 13 validation](end_to_end_validation.md)
+for the isolated wheel-install evidence and reproduced commands. The pinned
+environment was CPU only; no GPU execution was verified. The original
+[notebook](../Notebooks/GradientVanishingAnalysis.ipynb) and immutable
+[baseline fixture](../tests/fixtures/notebook_baseline.json) remain unchanged.

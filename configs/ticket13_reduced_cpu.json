@@ -1,0 +1,30 @@
+{
+  "sequence_lengths": [10],
+  "model_names": ["Vanilla RNN", "LSTM", "GRU"],
+  "seeds": [0, 1],
+  "training": {
+    "updates": 3,
+    "tuning_updates": 2,
+    "batch_size": 8,
+    "evaluation_interval": 1,
+    "evaluation_size": 32,
+    "gradient_capture_updates": [0, 2]
+  },
+  "default_hyperparameters": {"hidden_size": 8},
+  "tuning": {
+    "trials": 2,
+    "hidden_sizes": [4, 8],
+    "initializations": ["default", "xavier"]
+  },
+  "ablation": {
+    "sequence_lengths": [10],
+    "gate_modes": ["zero", "one", "chrono"]
+  },
+  "gradients": {
+    "initial_seeds": 2,
+    "sweep_seeds": 2,
+    "sweep_sequence_length": 10,
+    "sweep_biases": [-1.0, 0.0, 1.0]
+  },
+  "device": "cpu"
+}

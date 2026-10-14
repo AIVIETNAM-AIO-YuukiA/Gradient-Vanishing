@@ -65,6 +65,11 @@ All four commands completed. `main` ran one trial and two one-update training
 runs. The ablation ran the configured vanilla, LSTM, and GRU conditions. The
 sweep ran both gated models at bias zero. These are execution checks, not
 research conclusions at the notebook's sequence lengths or budgets.
+For the broader two-run CPU validation, use the committed
+[`configs/ticket13_reduced_cpu.json`](../configs/ticket13_reduced_cpu.json).
+It covers all three models and all seven gate-ablation conditions at `T=10`;
+the exact commands and saved outputs are in
+[end_to_end_validation.md](end_to_end_validation.md).
 
 ## Saved results and reports
 
@@ -136,5 +141,5 @@ Git commit.
 CPU was verified locally. `device=auto` and `device=cuda` set
 `CUBLAS_WORKSPACE_CONFIG` before Torch imports; Torch deterministic-operation
 errors are surfaced. GPU numerical equivalence has not been verified. No full
-matrix was run for this ticket; Ticket 13 covers the broader end-to-end
-reproduction validation.
+matrix was run for this ticket. Ticket 13 validated a reduced end-to-end
+pipeline; the full empirical matrix remains for Ticket 14.
