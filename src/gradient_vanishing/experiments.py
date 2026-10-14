@@ -1,4 +1,4 @@
-"""Notebook-equivalent tuning and main comparison (cells 15 and 17)."""
+"""Notebook-equivalent tuning, main comparison, and ablation (cells 15, 17, 27)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import copy
 import hashlib
 import json
 import sys
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -18,7 +18,7 @@ from optuna.samplers import TPESampler
 
 from gradient_vanishing.config import load_config
 from gradient_vanishing.data import get_eval_sets
-from gradient_vanishing.gradients import training_log10_relative_norms
+from gradient_vanishing.gradients import measure_init_gradients, training_log10_relative_norms
 from gradient_vanishing.training import NOTEBOOK_SHA256, evaluate, train_model
 
 
@@ -294,5 +294,150 @@ def run_main_comparison(
 
 def save_main_comparison(path: str | Path, result: ComparisonResult) -> None:
     """Write raw comparison results and provenance without retraining."""
+    Path(path).write_text(json.dumps(result.record, indent=2, allow_nan=False) + "\n",
+                          encoding="utf-8")
+
+
+@dataclass
+class AblationResult:
+    record: dict[str, Any]
+
+
+class AblationInterruptedError(RuntimeError):
+    """An ablation stopped; ``result`` retains completed and failed work."""
+
+    def __init__(self, message: str, result: AblationResult) -> None:
+        super().__init__(message)
+        self.result = result
+
+
+def epochs_to_threshold(history: Mapping[str, Any], threshold: float) -> int | None:
+    """First checked validation update strictly below the notebook threshold."""
+    return next((epoch for epoch, value in zip(history["val_epochs"], history["val_loss"])
+                 if value < threshold), None)
+
+
+def run_gate_ablation(
+    config: Mapping[str, Any] | None = None,
+    *,
+    device: str | torch.device | None = None,
+) -> AblationResult:
+    """Run notebook cell 27's seven conditions, independently of main/tuning."""
+    effective_config = copy.deepcopy(config if config is not None else load_config())
+    selected_device = str(device) if device is not None else effective_config["device"]
+    if selected_device == "auto":
+        selected_device = "cuda" if torch.cuda.is_available() else "cpu"
+    ablation = effective_config["ablation"]
+    training = effective_config["training"]
+    params = {
+        "lr": effective_config["default_hyperparameters"]["learning_rate"],
+        "hidden_size": effective_config["default_hyperparameters"]["hidden_size"],
+        "init_method": effective_config["default_hyperparameters"]["initialization"],
+    }
+    conditions = [("Vanilla RNN", "—", "default")]
+    conditions.extend((name, mode, mode) for name in ("LSTM", "GRU")
+                      for mode in ablation["gate_modes"])
+    record: dict[str, Any] = {
+        "schema_version": 1, "status": "running", "configuration": effective_config,
+        "sequence_length_order": list(ablation["sequence_lengths"]),
+        "condition_order": [{"model": name, "label": label, "gate_mode": mode}
+                            for name, label, mode in conditions],
+        "seed_order": list(effective_config["seeds"]),
+        "threshold": ablation["validation_threshold"],
+        "gradient_seed_count": effective_config["gradients"]["initial_seeds"],
+        "hyperparameters": params, "results": {},
+        "python_version": sys.version.split()[0], "torch_version": torch.__version__,
+        "optuna_version": optuna.__version__, "device": selected_device,
+        "training_dtype": "torch.float32", "initial_gradient_dtype": "torch.float64",
+        "notebook_sha256": NOTEBOOK_SHA256,
+    }
+    result = AblationResult(record)
+    length: int | None = None
+    name: str | None = None
+    label: str | None = None
+    seed: int | None = None
+    phase = "setup"
+    try:
+        for length in ablation["sequence_lengths"]:
+            key = str(length)
+            record["results"][key] = []
+            # Cell 27 requests the fixed test set once before all conditions.
+            phase, name, label, seed = "fixed_test_set", None, None, None
+            test_x, test_y = get_eval_sets(length, effective_config, device=selected_device)["test"]
+            for name, label, gate_mode in conditions:
+                gate_parameter = ("W_z.bias" if name == "GRU" else
+                                  "W_f.bias" if name == "LSTM" else None)
+                retention_bias_sign = (-1 if name == "GRU" else
+                                       1 if name == "LSTM" else None)
+                condition = {
+                    "model": name, "sequence_length": length, "label": label,
+                    "gate_mode": gate_mode, "gate_parameter": gate_parameter,
+                    "retention_bias_sign": retention_bias_sign,
+                    "hyperparameters": dict(params),
+                    "threshold": ablation["validation_threshold"],
+                    "runs": [], "initial_gradients": None,
+                    "test_mean": None, "test_sample_std": None,
+                    "threshold_success_count": 0, "threshold_mean_success_update": None,
+                    "decay_mean": None, "decay_sample_std": None, "status": "running",
+                }
+                record["results"][key].append(condition)
+                for seed in effective_config["seeds"]:
+                    phase = "training"
+                    run_record = {
+                        "model": name, "sequence_length": length, "label": label,
+                        "gate_mode": gate_mode, "seed": seed,
+                        "hyperparameters": dict(params),
+                        "split_seeds": copy.deepcopy(effective_config["split_seeds"]),
+                        "status": "running",
+                    }
+                    condition["runs"].append(run_record)
+                    run = train_model(name, effective_config, length, seed,
+                                      epochs=training["updates"], gate_init=gate_mode,
+                                      hyperparameters=params, device=selected_device)
+                    run_record.update({"history": run.history, "metadata": run.metadata,
+                                       "final_val": run.history["final_val"],
+                                       "initial_gate": run.metadata["initial_gate"],
+                                       "first_threshold_update": epochs_to_threshold(
+                                           run.history, ablation["validation_threshold"])})
+                    phase = "test_evaluation"
+                    test_mse = evaluate(run.model, test_x, test_y)
+                    run_record.update({"test_mse": test_mse, "status": "complete",
+                                       "model_training_mode_after_test": run.model.training})
+                phase, seed = "initial_gradients", None
+                initial = measure_init_gradients(
+                    name, length, effective_config, gate_mode=gate_mode,
+                    n_seeds=effective_config["gradients"]["initial_seeds"],
+                    hyperparameters=params, device=selected_device,
+                )
+                condition["initial_gradients"] = asdict(initial)
+                condition["decay_mean"] = initial.decay_mean
+                condition["decay_sample_std"] = initial.decay_sample_std
+                test_values = np.asarray([run["test_mse"] for run in condition["runs"]], dtype=float)
+                condition["test_mean"] = float(np.mean(test_values))
+                condition["test_sample_std"] = (float(np.std(test_values, ddof=1))
+                                                if len(test_values) > 1 else None)
+                successful = [run["first_threshold_update"] for run in condition["runs"]
+                              if run["first_threshold_update"] is not None]
+                condition["threshold_success_count"] = len(successful)
+                condition["threshold_mean_success_update"] = (
+                    float(np.mean(successful)) if successful else None)
+                condition["status"] = "complete"
+        record["status"] = "complete"
+    except Exception as error:
+        record["status"] = "incomplete"
+        record["failure"] = {"phase": phase, "sequence_length": length,
+                             "model": name, "label": label, "seed": seed,
+                             "error_type": type(error).__name__, "message": str(error)}
+        if phase in ("training", "test_evaluation"):
+            record["results"][str(length)][-1]["runs"][-1]["status"] = "failed"
+        raise AblationInterruptedError(str(error), result) from error
+    finally:
+        record["final_torch_rng_sha256"] = hashlib.sha256(
+            torch.get_rng_state().numpy().tobytes()).hexdigest()
+    return result
+
+
+def save_gate_ablation(path: str | Path, result: AblationResult) -> None:
+    """Write the raw ablation and its provenance as strict JSON."""
     Path(path).write_text(json.dumps(result.record, indent=2, allow_nan=False) + "\n",
                           encoding="utf-8")

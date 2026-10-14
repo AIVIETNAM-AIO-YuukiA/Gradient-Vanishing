@@ -86,6 +86,15 @@ def train_model(
     np.random.seed(seed)
     torch.manual_seed(seed)
     model = build_model(name, params, gate_init, T, device=selected_device)
+    if name == "GRU":
+        initial_gate = {"parameter": "W_z.bias", "retention_bias_sign": -1,
+                        "bias": model.W_z.bias.detach().tolist(), "paired_input_bias": None}
+    elif name == "LSTM":
+        initial_gate = {"parameter": "W_f.bias", "retention_bias_sign": 1,
+                        "bias": model.W_f.bias.detach().tolist(),
+                        "paired_input_bias": model.W_i.bias.detach().tolist() if gate_init == "chrono" else None}
+    else:
+        initial_gate = None
     optimizer = torch.optim.Adam(model.parameters(), lr=params["lr"])
     x_val, y_val = get_eval_sets(T, effective_config, device=selected_device)["val"]
 
@@ -125,6 +134,7 @@ def train_model(
         "seed": seed,
         "updates": epochs,
         "gate_mode": gate_init,
+        "initial_gate": initial_gate,
         "gradient_capture_updates": list(record_grad_epochs),
         "batch_size": training["batch_size"],
         "evaluation_interval": training["evaluation_interval"],
