@@ -1,21 +1,25 @@
-"""One notebook-equivalent Optuna study (notebook cell 15)."""
+"""Notebook-equivalent tuning and main comparison (cells 15 and 17)."""
 
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
+import numpy as np
 import optuna
 import torch
 from optuna.pruners import MedianPruner
 from optuna.samplers import TPESampler
 
 from gradient_vanishing.config import load_config
-from gradient_vanishing.training import NOTEBOOK_SHA256, train_model
+from gradient_vanishing.data import get_eval_sets
+from gradient_vanishing.gradients import training_log10_relative_norms
+from gradient_vanishing.training import NOTEBOOK_SHA256, evaluate, train_model
 
 
 @dataclass
@@ -144,5 +148,151 @@ def tune_model(
 
 def save_study_result(path: str | Path, result: StudyResult) -> None:
     """Write the lightweight study record without training or a run manifest."""
+    Path(path).write_text(json.dumps(result.record, indent=2, allow_nan=False) + "\n",
+                          encoding="utf-8")
+
+
+@dataclass
+class ComparisonResult:
+    record: dict[str, Any]
+
+
+class ComparisonInterruptedError(RuntimeError):
+    """A comparison stopped; ``result`` retains completed and failed work."""
+
+    def __init__(self, message: str, result: ComparisonResult) -> None:
+        super().__init__(message)
+        self.result = result
+
+
+def run_main_comparison(
+    config: Mapping[str, Any] | None = None,
+    *,
+    device: str | torch.device | None = None,
+) -> ComparisonResult:
+    """Run the notebook's length → model → default/tuned → seed comparison.
+
+    Pass a validated reduced configuration for CPU checks. The checked-in
+    configuration schedules the original nine studies and 90 final runs.
+    """
+    effective_config = copy.deepcopy(config if config is not None else load_config())
+    selected_device = str(device) if device is not None else effective_config["device"]
+    if selected_device == "auto":
+        selected_device = "cuda" if torch.cuda.is_available() else "cpu"
+    lengths = effective_config["sequence_lengths"]
+    names = effective_config["model_names"]
+    seeds = effective_config["seeds"]
+    training = effective_config["training"]
+    captures = training["gradient_capture_updates"]
+    default_params = {
+        "lr": effective_config["default_hyperparameters"]["learning_rate"],
+        "hidden_size": effective_config["default_hyperparameters"]["hidden_size"],
+        "init_method": effective_config["default_hyperparameters"]["initialization"],
+    }
+    record: dict[str, Any] = {
+        "schema_version": 1,
+        "status": "running",
+        "configuration": effective_config,
+        "model_order": list(names),
+        "sequence_length_order": list(lengths),
+        "condition_order": ["default", "tuned"],
+        "seed_order": list(seeds),
+        "results": {}, "best_params": {}, "studies": {},
+        "gradient_heatmap": None,
+        "python_version": sys.version.split()[0],
+        "torch_version": torch.__version__,
+        "optuna_version": optuna.__version__,
+        "device": selected_device,
+        "dtype": "torch.float32",
+        "notebook_sha256": NOTEBOOK_SHA256,
+    }
+    result = ComparisonResult(record)
+    phase = "setup"
+    length: int | None = None
+    name: str | None = None
+    condition: str | None = None
+    seed: int | None = None
+    try:
+        for length in lengths:
+            key = str(length)
+            record["results"][key], record["best_params"][key], record["studies"][key] = {}, {}, {}
+            # The notebook requests the fixed test pair before this length's studies.
+            test_x, test_y = get_eval_sets(length, effective_config, device=selected_device)["test"]
+            for name in names:
+                record["results"][key][name] = {}
+                phase, condition, seed = "tuning", None, None
+                study = tune_model(name, length, effective_config, device=selected_device)
+                record["studies"][key][name] = study.record
+                tuned_params = dict(study.best_params)
+                record["best_params"][key][name] = tuned_params
+                for condition, params in (("default", default_params), ("tuned", tuned_params)):
+                    bucket = {
+                        "hyperparameters": dict(params),
+                        "tuning_study_name": study.study.study_name if condition == "tuned" else None,
+                        "tuning_best_trial_number": study.record["best_trial_number"] if condition == "tuned" else None,
+                        "runs": [], "test_mean": None, "test_sample_std": None,
+                    }
+                    record["results"][key][name][condition] = bucket
+                    for seed in seeds:
+                        phase = "training"
+                        run_record = {
+                            "model": name, "sequence_length": length,
+                            "seed": seed, "status": "running", "condition": condition,
+                            "hyperparameters": dict(params),
+                            "split_seeds": copy.deepcopy(effective_config["split_seeds"]),
+                            "tuning_study_name": bucket["tuning_study_name"],
+                            "tuning_best_trial_number": bucket["tuning_best_trial_number"],
+                        }
+                        bucket["runs"].append(run_record)
+                        run = train_model(
+                            name, effective_config, length, seed,
+                            epochs=training["updates"], gate_init=effective_config["main_gate_mode"],
+                            record_grad_epochs=captures, hyperparameters=params,
+                            device=selected_device,
+                        )
+                        phase = "test_evaluation"
+                        run_record.update({"history": run.history,
+                                           "final_val": run.history["final_val"],
+                                           "metadata": run.metadata})
+                        test_mse = evaluate(run.model, test_x, test_y)
+                        run_record.update({
+                            "status": "complete", "test_mse": test_mse,
+                            "model_training_mode_after_test": run.model.training,
+                        })
+                    tests = np.asarray([run["test_mse"] for run in bucket["runs"]], dtype=float)
+                    bucket["test_mean"] = float(np.mean(tests))
+                    bucket["test_sample_std"] = float(np.std(tests, ddof=1)) if len(tests) > 1 else None
+
+        max_length = max(lengths)
+        record["gradient_heatmap"] = {
+            "sequence_length": max_length,
+            "model_order": list(names),
+            "capture_updates": list(captures),
+            "log10_relative_norms": {
+                str(index): [training_log10_relative_norms(
+                    record["results"][str(max_length)][model]["tuned"]["runs"][0]["history"]["grad_norms"][index]
+                ) for model in names]
+                for index in captures
+            },
+        }
+        record["status"] = "complete"
+    except Exception as error:
+        record["status"] = "incomplete"
+        record["failure"] = {"phase": phase, "sequence_length": length,
+                             "model": name, "condition": condition, "seed": seed,
+                             "error_type": type(error).__name__, "message": str(error)}
+        if isinstance(error, NoCompletedTrialError) and length is not None and name is not None:
+            record["studies"][str(length)][name] = error.result.record
+        if seed is not None and condition is not None and phase != "tuning":
+            record["results"][str(length)][name][condition]["runs"][-1]["status"] = "failed"
+        raise ComparisonInterruptedError(str(error), result) from error
+    finally:
+        record["final_torch_rng_sha256"] = hashlib.sha256(
+            torch.get_rng_state().numpy().tobytes()).hexdigest()
+    return result
+
+
+def save_main_comparison(path: str | Path, result: ComparisonResult) -> None:
+    """Write raw comparison results and provenance without retraining."""
     Path(path).write_text(json.dumps(result.record, indent=2, allow_nan=False) + "\n",
                           encoding="utf-8")
