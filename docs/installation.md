@@ -16,7 +16,7 @@ py -3.13 -m venv .venv
 ```
 
 The pinned lock records 38 exact dependency versions, including NumPy 2.4.0,
-Optuna 4.8.0, and Matplotlib 3.10.8. A wheel-installed import and both CLI
+Optuna 5.0.0, and Matplotlib 3.10.8. A wheel-installed import and both CLI
 help commands were verified from outside the checkout. The default JSON is
 bundled in the wheel; verify it with:
 

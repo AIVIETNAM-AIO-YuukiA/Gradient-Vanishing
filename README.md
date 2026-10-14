@@ -12,7 +12,7 @@ The package separates synthetic data (`data.py`), recurrent equations
 (`gradients.py`), experiments (`experiments.py`), saved-result reporting
 (`reporting.py`), and the CLI/run manifest (`cli.py`, `run_manifest.py`).
 The baseline fixture and tests live under `tests/`; research and usage notes
-live under `docs/`.
+live under [docs/](docs/README.md).
 
 ## Install and run
 
