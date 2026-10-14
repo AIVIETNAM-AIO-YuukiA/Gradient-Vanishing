@@ -6,7 +6,7 @@ This guide describes how to install the verified environment, execute research e
 
 ## 1. Environment and Installation
 
-The canonical execution environment uses **Python 3.13.0**, **PyTorch 2.11.0 (CPU)**, and **Optuna 5.0.0**. The exact dependencies are pinned in [`requirements-cpu.lock`](../requirements-cpu.lock).
+The canonical execution environment uses **Python 3.13.0**, **PyTorch 2.11.0 (CPU)**, and **Optuna 5.0.0**. The exact dependencies are pinned in [`requirements.lock`](../requirements.lock).
 
 ### 1.1. Fresh Virtual Environment Setup
 
@@ -18,7 +18,7 @@ py -3.13 -m venv .venv
 & .venv\Scripts\Activate.ps1
 
 # Install pinned dependencies
-python -m pip install -r requirements-cpu.lock
+python -m pip install -r requirements.lock
 
 # Build a non-editable wheel and install it
 python -m pip wheel --no-deps --no-build-isolation --wheel-dir dist .
@@ -87,13 +87,13 @@ The package defaults describe the full notebook-size matrix (3 sequence lengths,
 
 ### Running a Reduced Validation Pipeline
 
-For fast verification on CPU, use the committed configuration [`configs/ticket13_reduced_cpu.json`](../configs/ticket13_reduced_cpu.json):
+For fast verification on CPU, use the committed configuration [`configs/smoke.json`](../configs/smoke.json):
 
 ```powershell
-gradient-vanishing main --config configs/ticket13_reduced_cpu.json --output-dir runs
-gradient-vanishing gradients --config configs/ticket13_reduced_cpu.json --output-dir runs
-gradient-vanishing ablation --config configs/ticket13_reduced_cpu.json --output-dir runs
-gradient-vanishing sweep --config configs/ticket13_reduced_cpu.json --output-dir runs
+gradient-vanishing main --config configs/smoke.json --output-dir runs
+gradient-vanishing gradients --config configs/smoke.json --output-dir runs
+gradient-vanishing ablation --config configs/smoke.json --output-dir runs
+gradient-vanishing sweep --config configs/smoke.json --output-dir runs
 ```
 
 ---

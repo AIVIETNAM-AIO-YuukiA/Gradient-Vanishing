@@ -1,7 +1,7 @@
 # Reference CPU environment snapshot: Windows, CPython 3.13.0.
 # Exact installed versions of direct dependencies and their active transitive
 # requirements, captured from package metadata before Ticket 02 extraction.
-# Install with: python -m pip install -r requirements-cpu.lock
+# Install with: python -m pip install -r requirements.lock
 alembic==1.18.4
 colorama==0.4.6
 colorlog==6.10.1

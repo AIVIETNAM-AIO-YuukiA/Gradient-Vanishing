@@ -12,7 +12,7 @@ The project documentation is organized into three comprehensive documents:
 
 * **[User & Operations Guide](docs/usage.md):** Complete installation commands, CLI reference (`main`, `gradients`, `ablation`, `sweep`, `report`), configuration override semantics, run manifests, and report generation workflows.
 * **[Scientific Methodology](docs/methodology.md):** Formal problem definition, mathematical recurrence equations, BPTT hidden-gradient tracking, exponential decay curve fitting, Optuna hyperparameter optimization, and ablation designs.
-* **[Full Reproducibility Report](docs/full_reproducibility_report.md):** Empirical evidence from the complete multi-hour CPU experiment matrix (180 Optuna trials, 90 main runs, 35 ablation runs, 270 gradient evaluations), artifact inventories, and comparison with historical notebook outputs.
+* **[Full Reproducibility Report](docs/full_reproducibility_report.md):** Empirical evidence from the complete 25-minute CPU experiment matrix (1,506 seconds across 4 sequential stages: 180 Optuna trials, 90 main runs, 35 ablation runs, 270 gradient evaluations), artifact inventories, and comparison with historical notebook outputs.
 
 ---
 
@@ -20,13 +20,13 @@ The project documentation is organized into three comprehensive documents:
 
 ### 1. Installation
 
-The canonical environment uses **Python 3.13.0**, **PyTorch 2.11.0 (CPU)**, and **Optuna 5.0.0** pinned in [`requirements-cpu.lock`](requirements-cpu.lock):
+The canonical environment uses **Python 3.13.0**, **PyTorch 2.11.0 (CPU)**, and **Optuna 5.0.0** pinned in [`requirements.lock`](requirements.lock):
 
 ```powershell
 # Create environment and install dependencies
 py -3.13 -m venv .venv
 & .venv\Scripts\Activate.ps1
-python -m pip install -r requirements-cpu.lock
+python -m pip install -r requirements.lock
 
 # Build and install wheel package
 python -m pip wheel --no-deps --no-build-isolation --wheel-dir dist .
@@ -38,10 +38,10 @@ python -m pip install --no-deps (Get-Item dist\gradient_vanishing_research-*.whl
 Execute short end-to-end experiment runs on CPU using the committed reduced configuration:
 
 ```powershell
-gradient-vanishing main --config configs/ticket13_reduced_cpu.json --output-dir runs
-gradient-vanishing gradients --config configs/ticket13_reduced_cpu.json --output-dir runs
-gradient-vanishing ablation --config configs/ticket13_reduced_cpu.json --output-dir runs
-gradient-vanishing sweep --config configs/ticket13_reduced_cpu.json --output-dir runs
+gradient-vanishing main --config configs/smoke.json --output-dir runs
+gradient-vanishing gradients --config configs/smoke.json --output-dir runs
+gradient-vanishing ablation --config configs/smoke.json --output-dir runs
+gradient-vanishing sweep --config configs/smoke.json --output-dir runs
 ```
 
 ### 3. Generate Reports from Saved Results
@@ -83,7 +83,7 @@ Gradient-Vanishing/
 │   │   └── notebook_baseline.json      # Canonical execution oracle fixture
 │   └── test_*.py                       # Component and integration tests
 ├── pyproject.toml                      # Package build configuration (Optuna 5.0.0)
-├── requirements-cpu.lock               # Canonical pinned CPU dependency lockfile
+├── requirements.lock                   # Canonical pinned CPU dependency lockfile
 ├── setup.py                            # Custom build hook for wheel revision provenance
 ├── AGENTS.md                           # AI assistant guidelines and architectural constraints
 └── README.md                           # Project overview and quick-start guide

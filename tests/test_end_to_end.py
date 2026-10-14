@@ -13,7 +13,7 @@ import pytest
 from gradient_vanishing.reporting import load_saved_result, main_summary_rows
 
 
-CONFIG = Path(__file__).resolve().parents[1] / "configs" / "ticket13_reduced_cpu.json"
+CONFIG = Path(__file__).resolve().parents[1] / "configs" / "smoke.json"
 
 
 def _run(stage, config, root, *extra):

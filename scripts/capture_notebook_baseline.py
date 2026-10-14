@@ -85,7 +85,7 @@ def _load_notebook() -> dict[str, Any]:
 
 def _versions() -> dict[str, str]:
     versions = {}
-    for line in (ROOT / "requirements-cpu.lock").read_text(encoding="utf-8").splitlines():
+    for line in (ROOT / "requirements.lock").read_text(encoding="utf-8").splitlines():
         if not line or line.startswith("#"):
             continue
         name, required = line.split("==", 1)
