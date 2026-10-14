@@ -89,9 +89,3 @@ Gradient-Vanishing/
 ```
 
 ---
-
-## Development History
-
-The initial 14-ticket refactoring, local issue tracker (`.scratch/`), and intermediate planning specifications are durably preserved in the repository Git history:
-* **Archival Branch:** `archive/refactoring-docs-and-tickets`
-* **Archival Tag:** `archive-refactor-history`
