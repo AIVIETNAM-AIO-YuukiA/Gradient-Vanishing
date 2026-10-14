@@ -22,3 +22,6 @@ dist/
 
 # Experiment Runs and Execution Outputs
 runs/
+
+# AI Assistant Configurations
+AGENTS.md

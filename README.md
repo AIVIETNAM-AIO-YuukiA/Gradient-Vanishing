@@ -85,7 +85,6 @@ Gradient-Vanishing/
 ├── pyproject.toml                      # Package build configuration (Optuna 5.0.0)
 ├── requirements.lock                   # Canonical pinned CPU dependency lockfile
 ├── setup.py                            # Custom build hook for wheel revision provenance
-├── AGENTS.md                           # AI assistant guidelines and architectural constraints
 └── README.md                           # Project overview and quick-start guide
 ```
 
