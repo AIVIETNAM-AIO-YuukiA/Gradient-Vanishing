@@ -189,7 +189,7 @@ def test_seeded_runs_reproduce_final_parameters_and_torch_rng():
 
 def test_notebook_and_oracle_files_remain_untouched():
     root = Path(__file__).resolve().parents[1]
-    notebook = root / "Notebooks/GradientVanishingAnalysis.ipynb"
+    notebook = root / "notebooks/GradientVanishingAnalysis.ipynb"
     fixture = root / "tests/fixtures/notebook_baseline.json"
     assert hashlib.sha256(notebook.read_bytes()).hexdigest() == "71ec17cdb7fffcc39fef12bfe4977f75117ceedaa90c03109e79f51d98059f44"
     assert hashlib.sha256(fixture.read_bytes()).hexdigest() == "76e69564a5530b0a92e5cbac32b0b5ade492d516bd0e091c734c9e918b3dd336"

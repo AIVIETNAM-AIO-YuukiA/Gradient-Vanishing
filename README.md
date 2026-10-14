@@ -1,6 +1,6 @@
 # Understanding Gradient Vanishing in Recurrent Networks
 
-This repository provides a modular, fully tested research package reproducing the experiments in [`Notebooks/GradientVanishingAnalysis.ipynb`](Notebooks/GradientVanishingAnalysis.ipynb).
+This repository provides a modular, fully tested research package reproducing the experiments in [`Notebooks/GradientVanishingAnalysis.ipynb`](notebooks/GradientVanishingAnalysis.ipynb).
 
 The project studies a **first-element memorization task**: a recurrent neural network (Vanilla RNN, LSTM, or handwritten GRU) processes a sequence with a single scalar value introduced at $t=0$ followed by zeros, and must predict that initial value at the final timestep. It investigates how recurrent equations, BPTT length, and gate bias initialization influence long-range gradient flow and training dynamics.
 

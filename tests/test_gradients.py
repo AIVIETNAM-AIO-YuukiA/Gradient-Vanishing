@@ -256,5 +256,5 @@ def test_diagnostic_json_round_trip_includes_numeric_arrays_and_provenance(tmp_p
 
 
 def test_source_and_fixture_hashes_remain_unchanged():
-    assert hashlib.sha256((ROOT / "Notebooks/GradientVanishingAnalysis.ipynb").read_bytes()).hexdigest() == "71ec17cdb7fffcc39fef12bfe4977f75117ceedaa90c03109e79f51d98059f44"
+    assert hashlib.sha256((ROOT / "notebooks/GradientVanishingAnalysis.ipynb").read_bytes()).hexdigest() == "71ec17cdb7fffcc39fef12bfe4977f75117ceedaa90c03109e79f51d98059f44"
     assert hashlib.sha256((ROOT / "tests/fixtures/notebook_baseline.json").read_bytes()).hexdigest() == "76e69564a5530b0a92e5cbac32b0b5ade492d516bd0e091c734c9e918b3dd336"

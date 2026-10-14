@@ -1,6 +1,6 @@
 # Scientific Research Methodology
 
-This document details the mathematical models, algorithmic definitions, diagnostic quantities, and experimental design for the **Gradient-Vanishing** research project, faithfully preserving the scientific framework of [`Notebooks/GradientVanishingAnalysis.ipynb`](../Notebooks/GradientVanishingAnalysis.ipynb).
+This document details the mathematical models, algorithmic definitions, diagnostic quantities, and experimental design for the **Gradient-Vanishing** research project, faithfully preserving the scientific framework of [`Notebooks/GradientVanishingAnalysis.ipynb`](../notebooks/GradientVanishingAnalysis.ipynb).
 
 ---
 

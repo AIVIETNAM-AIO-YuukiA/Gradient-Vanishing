@@ -88,7 +88,7 @@ def source_revision() -> str | None:
 
 
 def notebook_file_hash() -> str | None:
-    notebook = Path(__file__).resolve().parents[2] / "Notebooks" / "GradientVanishingAnalysis.ipynb"
+    notebook = Path(__file__).resolve().parents[2] / "notebooks" / "GradientVanishingAnalysis.ipynb"
     return file_sha256(notebook) if notebook.exists() else None
 
 

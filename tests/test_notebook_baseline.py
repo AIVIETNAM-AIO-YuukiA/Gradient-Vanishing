@@ -86,7 +86,7 @@ def test_fixture_schema_provenance_and_checksums(baseline):
             assert case["rng_order"] and case["provenance"]
             assert case["input"] and case["expected"]
             assert case["comparison"]["initial_parameters"] == "exact array equality"
-    assert (ROOT / "Notebooks" / "GradientVanishingAnalysis.ipynb").stat().st_size > 0
+    assert (ROOT / "notebooks" / "GradientVanishingAnalysis.ipynb").stat().st_size > 0
 
 
 def test_fresh_execution_matches_committed_numerical_oracle(baseline):

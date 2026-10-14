@@ -19,7 +19,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-NOTEBOOK = ROOT / "Notebooks" / "GradientVanishingAnalysis.ipynb"
+NOTEBOOK = ROOT / "notebooks" / "GradientVanishingAnalysis.ipynb"
 SOURCE_SHA256 = "71ec17cdb7fffcc39fef12bfe4977f75117ceedaa90c03109e79f51d98059f44"
 SOURCE_COMMIT = "72418d9241b81e8ffefc73c917eab6663413cb10"
 DEFINITION_CELLS = [3, 5, 7, 9, 11, 13]
@@ -76,7 +76,7 @@ def _load_notebook() -> dict[str, Any]:
     if _digest(data) != SOURCE_SHA256:
         raise RuntimeError("Original notebook SHA-256 differs from the audited source")
     snapshot = subprocess.check_output(
-        ["git", "show", f"{SOURCE_COMMIT}:Notebooks/GradientVanishingAnalysis.ipynb"], cwd=ROOT
+        ["git", "show", f"{SOURCE_COMMIT}:notebooks/GradientVanishingAnalysis.ipynb"], cwd=ROOT
     )
     if _digest(snapshot) != SOURCE_SHA256:
         raise RuntimeError("Committed source snapshot does not match the audited notebook")
@@ -270,7 +270,7 @@ def capture() -> dict[str, Any]:
         case["environment_sha256"] = _canonical_digest(environment)
     result = {
         "schema_version": 1,
-        "source": {"notebook": "Notebooks/GradientVanishingAnalysis.ipynb",
+        "source": {"notebook": "notebooks/GradientVanishingAnalysis.ipynb",
                    "notebook_sha256": SOURCE_SHA256, "source_snapshot_commit": SOURCE_COMMIT,
                    "executed_cell_indices": DEFINITION_CELLS,
                    "saved_notebook_outputs": "historical_unverified_not_used"},
