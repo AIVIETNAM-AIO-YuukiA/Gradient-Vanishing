@@ -1,8 +1,13 @@
 # Ticket 14: full experiment execution plan (preflight only)
 
-**Status:** awaiting explicit resource and execution approval. No full study,
-300-update training run, or full diagnostic sweep has been launched. This plan
-audits notebook cells 5, 15, 17, 19, 21, 23, 25, 27, and 28 against the
+This historical preflight plan was subsequently approved and executed on the
+pinned CPU environment. See the [full reproducibility report](full_reproducibility_report.md)
+for actual results, timings, and limitations.
+
+**Historical pre-execution status:** this plan awaited explicit resource and
+execution approval; no full study, 300-update training run, or full diagnostic
+sweep had been launched when it was written. This plan audits notebook cells
+5, 15, 17, 19, 21, 23, 25, 27, and 28 against the
 approved specification and the current CLI. It is an execution plan, not an
 empirical reproduction report.
 

@@ -41,12 +41,14 @@ precedence, result layout, and deliberate `--allow-full` safeguard.
 
 The package defaults match the notebook's full budgets; running them is an
 intentional, expensive choice. **A completed reduced run validates the
-software workflow, not the notebook's full empirical results.** The full
-matrix and GPU behavior are NOT VERIFIED; [Ticket 13 validation](docs/end_to_end_validation.md)
-records exactly what was checked. The known GRU terminology, evaluation-mode
-side effect, and missing learning-curve uncertainty band are documented in the
-[approved specification](docs/refactoring_spec.md). They remain separate from
-this extraction.
+software workflow, not the notebook's full empirical results.** The
+[Ticket 14 report](docs/full_reproducibility_report.md) records completed full
+CPU matrix coverage, direct notebook checks, and historical output differences.
+[Ticket 13 validation](docs/end_to_end_validation.md) records the earlier
+reduced pipeline. GPU behavior remains NOT VERIFIED. The known GRU terminology,
+evaluation-mode side effect, and missing learning-curve uncertainty band are
+documented in the [approved specification](docs/refactoring_spec.md). They
+remain separate from this extraction.
 
 ## Interpret the outputs
 
