@@ -133,10 +133,11 @@ comparison record, ablation record, or sweep record is saved when the existing
 experiment exception carries it. Files are serialized as strict JSON through
 atomic replacement. An error returns a nonzero exit code and leaves a manifest
 with the work completed so far.
-An installed wheel outside a Git checkout has no discoverable source commit,
-so `git_commit` is `null`; the notebook reference hash and package versions
-remain recorded. An editable install in this checkout records the current
-Git commit.
+A wheel built from a Git checkout embeds the build commit, so runs from the
+installed wheel record it even outside the checkout. Builds without Git
+metadata record `git_commit: null`; the notebook reference hash and package
+versions remain available. An editable install in this checkout records the
+current Git commit.
 
 CPU was verified locally. `device=auto` and `device=cuda` set
 `CUBLAS_WORKSPACE_CONFIG` before Torch imports; Torch deterministic-operation

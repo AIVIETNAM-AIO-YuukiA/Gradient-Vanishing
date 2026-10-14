@@ -103,6 +103,44 @@ The paired run directories were:
 | Sweep | `sweep-20261014T130659-1791983219277671900-13868/` | `sweep-20261014T130710-1791983230367523200-10996/` |
 | Report | `report-20261014T130730-1791983250775381400-3364/` | `report-20261014T130741-1791983261038394000-21508/` |
 
+### Paired validation after the provenance correction
+
+Both complete reduced pipelines were repeated with the corrected wheel from
+`C:\Users\Admin`. The commands were identical to the experiment and report
+commands above, with `$runs` set to
+`D:\ILPT\Project\Gradient-Vanishing\.tmp\ticket13_validation\revision_pipelines`.
+The paired stage commands were invoked in this order:
+
+```powershell
+foreach ($repeat in 1..2) {
+  foreach ($stage in @('main','gradients','ablation','sweep')) {
+    & $cli $stage --config $config --output-dir $runs
+    if ($LASTEXITCODE -ne 0) { throw "Failed: $stage repeat $repeat" }
+  }
+}
+```
+
+For each repeat, the `report` command above used that repeat's main, gradient,
+ablation, and sweep result paths. Both report commands completed. The new
+directories under `revision_pipelines/` are:
+
+| Stage | First run | Second run |
+| --- | --- | --- |
+| Main | `main-20261014T133156-1791984716055634700-29056/` | `main-20261014T133236-1791984756783366100-19404/` |
+| Gradients | `gradients-20261014T133205-1791984725313986000-428/` | `gradients-20261014T133241-1791984761257383900-2248/` |
+| Ablation | `ablation-20261014T133218-1791984738098763500-4560/` | `ablation-20261014T133245-1791984765454103700-6452/` |
+| Sweep | `sweep-20261014T133230-1791984750020704000-28764/` | `sweep-20261014T133250-1791984770184281700-5932/` |
+| Report | `report-20261014T133307-1791984787629976900-29984/` | `report-20261014T133310-1791984790444528400-21248/` |
+
+All ten new manifests recorded status `complete`, identical effective
+configuration within each pair, matching artifact SHA-256 hashes, and
+`git_commit: e9a40fc94c1c7bf76d85b2e2ecf4c6691475d2f5`. All paired
+scientific result records matched exactly after normalizing generated Optuna
+study names. Eleven of twelve report products were byte-identical; only the
+generated study-name column in `optuna_trials.csv` differed. These are the
+complete provenance-backed pipeline pairs. The earlier pairs remain useful
+repeatability evidence with incomplete source-revision provenance.
+
 Each experiment manifest reported `complete`, `reduced_or_modified`, CPU,
 the actual stage seeds/models/lengths, effective config, Python/dependency
 versions, timestamps, and matching SHA-256 hashes for every saved result.
@@ -202,7 +240,7 @@ ablation/sweep 26–28. No executable analysis cell was removed by Ticket 13.
 | Gate ablation | Direct-notebook reduced ablation regression and two repeated CLI runs | PASS at tested cases |
 | Retention-bias sweep | Direct-notebook reduced sweep regression and two repeated CLI runs at three biases | PASS at tested cases |
 | Reporting | Two saved-result-only runs, source hash and selected numeric/visual checks | PASS at tested cases |
-| Run manifests | Stage-specific provenance, status, artifact hashes; first wheel lacks Git revision, rebuilt wheel records `e9a40fc` | PASS for rebuilt-wheel run; PARTIAL for first ten runs |
+| Run manifests | Stage-specific provenance, status, artifact hashes; two corrected-wheel complete pipeline pairs record `e9a40fc` | PASS for corrected-wheel pairs; PARTIAL for preliminary ten runs |
 | Baseline regression | Immutable fixture and full test suite, including direct source execution | PASS at recorded cases |
 | Full notebook experiment matrix | Ticket 14 work; not executed here | **NOT VERIFIED** |
 | GPU execution and cross-device identity | CPU-only environment; no GPU run | **NOT VERIFIED** |
