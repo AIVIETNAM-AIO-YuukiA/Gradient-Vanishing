@@ -1,0 +1,24 @@
+# Python and Virtual Environments
+.venv/
+
+# Temporary and Scratch Directories
+.tmp/
+.cache/
+
+# Pytest and Test Caches
+.pytest_cache/
+.pytest_cache*/
+
+# Python Build & Distribution Artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# IDE and Editor Configurations
+.idea/
+.vscode/
+
+# Experiment Runs and Execution Outputs
+runs/
