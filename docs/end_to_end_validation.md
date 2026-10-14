@@ -15,7 +15,7 @@ establish its full-matrix research conclusions.
 | Dependency check | All 38 lock-file packages matched their pinned versions; `pip check` found no broken requirements |
 | Source notebook SHA-256 | `71ec17cdb7fffcc39fef12bfe4977f75117ceedaa90c03109e79f51d98059f44` |
 | Immutable baseline SHA-256 | `edc601e85522254471424940869598836cfea940a8d8711580bf8f0eca0818b9` |
-| Wheel source revision | The wheel was built from the Ticket 12 checkout. Its installed manifest records `git_commit: null` because a wheel outside a checkout cannot determine a Git commit; it records the notebook reference hash and package versions. |
+| Wheel source revision | The first validation wheel was built from the Ticket 12 checkout; its manifests record `git_commit: null`. After code review, a rebuilt wheel embedded source commit `e9a40fc94c1c7bf76d85b2e2ecf4c6691475d2f5`. A new outside-checkout gradient run recorded that exact commit. The initial eight experiment runs and two report runs remain computational evidence, but their source-revision provenance is incomplete. |
 
 The fresh environment was `.tmp/ticket13_validation/venv2`; it was created
 without access to the previous `.venv` packages. These installation commands
@@ -31,6 +31,26 @@ py -3.13 -m venv .tmp/ticket13_validation/venv2
 .tmp\ticket13_validation\venv2\Scripts\python.exe -m pip install --no-deps .tmp/ticket13_validation/wheels/gradient_vanishing_research-0.1.0-py3-none-any.whl
 .tmp\ticket13_validation\venv2\Scripts\python.exe -m pip check
 ```
+
+The review correction was checked with a second wheel build and non-editable
+reinstallation into the same isolated environment:
+
+```powershell
+.tmp\ticket13_validation\venv2\Scripts\python.exe -m pip wheel --no-deps --no-build-isolation --wheel-dir .tmp/ticket13_validation/revision_wheels .
+.tmp\ticket13_validation\venv2\Scripts\python.exe -m pip install --no-deps --force-reinstall .tmp/ticket13_validation/revision_wheels/gradient_vanishing_research-0.1.0-py3-none-any.whl
+```
+
+The second wheel contained `gradient_vanishing/_build_info.py` with
+`SOURCE_REVISION = 'e9a40fc94c1c7bf76d85b2e2ecf4c6691475d2f5'`.
+From `C:\Users\Admin`, this command completed and its manifest recorded the
+same commit, status `complete`, reduced scope, and three hashed artifacts:
+
+```powershell
+& 'D:\ILPT\Project\Gradient-Vanishing\.tmp\ticket13_validation\venv2\Scripts\gradient-vanishing.exe' gradients --config 'D:\ILPT\Project\Gradient-Vanishing\configs\ticket13_reduced_cpu.json' --output-dir 'D:\ILPT\Project\Gradient-Vanishing\.tmp\ticket13_validation\revision_run'
+```
+
+The resulting manifest is under
+`.tmp/ticket13_validation/revision_run/gradients-20261014T132728-1791984448894931300-9148/`.
 
 From `C:\Users\Admin`, outside the checkout, the installed package imported
 from `venv2/Lib/site-packages`; `load_config()` read the bundled default JSON
@@ -182,7 +202,7 @@ ablation/sweep 26–28. No executable analysis cell was removed by Ticket 13.
 | Gate ablation | Direct-notebook reduced ablation regression and two repeated CLI runs | PASS at tested cases |
 | Retention-bias sweep | Direct-notebook reduced sweep regression and two repeated CLI runs at three biases | PASS at tested cases |
 | Reporting | Two saved-result-only runs, source hash and selected numeric/visual checks | PASS at tested cases |
-| Run manifests | Stage-specific provenance, status, artifact hashes, unavailable Git revision recorded as null | PASS at tested cases |
+| Run manifests | Stage-specific provenance, status, artifact hashes; first wheel lacks Git revision, rebuilt wheel records `e9a40fc` | PASS for rebuilt-wheel run; PARTIAL for first ten runs |
 | Baseline regression | Immutable fixture and full test suite, including direct source execution | PASS at recorded cases |
 | Full notebook experiment matrix | Ticket 14 work; not executed here | **NOT VERIFIED** |
 | GPU execution and cross-device identity | CPU-only environment; no GPU run | **NOT VERIFIED** |

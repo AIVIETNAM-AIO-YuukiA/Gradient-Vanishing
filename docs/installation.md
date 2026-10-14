@@ -31,6 +31,10 @@ prints the effective defaults without starting an experiment. An explicit
 partial configuration file and repeatable `--set KEY=JSON` options override
 only named values; unknown keys and invalid values fail validation.
 
+Wheels built from a Git checkout embed the source commit in their run
+manifests. When building from a source archive without Git metadata, the
+`git_commit` field is `null`; record the archive hash separately in that case.
+
 See [commands.md](commands.md) for the supported stages, a reduced-run example,
 output paths, and the full-run safeguard. See [Ticket 13 validation](end_to_end_validation.md)
 for the isolated wheel-install evidence and reproduced commands. The pinned
