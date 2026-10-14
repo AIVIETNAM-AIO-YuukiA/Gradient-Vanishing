@@ -114,28 +114,35 @@ def _linear(layer, weights, bias=None):
             layer.bias.fill_(bias)
 
 
-def test_vanilla_rnn_one_step_equation_from_zero_state():
+def test_vanilla_rnn_two_step_equation_from_zero_state():
     model = VanillaRNN_Tracker(1, 1, 1).double()
     _linear(model.W_ih, [2.0], 0.3)
     _linear(model.W_hh, [0.8])
     _linear(model.W_ho, [1.5], -0.2)
-    actual = model(torch.tensor([[[0.4]]], dtype=torch.float64))
-    expected = 1.5 * math.tanh(2.0 * 0.4 + 0.3) - 0.2
+    actual = model(torch.tensor([[[0.4]], [[-0.25]]], dtype=torch.float64))
+    first_hidden = math.tanh(2.0 * 0.4 + 0.3)
+    expected = 1.5 * math.tanh(2.0 * -0.25 + 0.8 * first_hidden + 0.3) - 0.2
     assert actual.shape == (1, 1)
     assert actual.item() == pytest.approx(expected, abs=1e-12)
 
 
-def test_lstm_one_step_equation_from_zero_states():
+def test_lstm_two_step_equation_from_zero_states():
     model = LSTM_Tracker(1, 1, 1).double()
     for layer, w, b in ((model.W_i, [0.7, 0.2], -0.1), (model.W_f, [-0.3, 0.8], 0.2),
                         (model.W_c, [1.1, -0.4], 0.05), (model.W_o, [0.9, 0.3], -0.15)):
         _linear(layer, w, b)
     _linear(model.W_out, [1.7], 0.25)
-    x = 0.6
     sigmoid = lambda v: 1 / (1 + math.exp(-v))
-    cell = sigmoid(0.7*x-0.1) * math.tanh(1.1*x+0.05)
-    expected = 1.7 * sigmoid(0.9*x-0.15) * math.tanh(cell) + 0.25
-    actual = model(torch.tensor([[[x]]], dtype=torch.float64))
+    hidden, cell = 0.0, 0.0
+    for x in (0.6, -0.2):
+        input_gate = sigmoid(0.7*x + 0.2*hidden - 0.1)
+        forget_gate = sigmoid(-0.3*x + 0.8*hidden + 0.2)
+        candidate = math.tanh(1.1*x - 0.4*hidden + 0.05)
+        output_gate = sigmoid(0.9*x + 0.3*hidden - 0.15)
+        cell = forget_gate*cell + input_gate*candidate
+        hidden = output_gate*math.tanh(cell)
+    expected = 1.7*hidden + 0.25
+    actual = model(torch.tensor([[[0.6]], [[-0.2]]], dtype=torch.float64))
     assert actual.item() == pytest.approx(expected, abs=1e-12)
     assert model.c_states[0].requires_grad is False
 

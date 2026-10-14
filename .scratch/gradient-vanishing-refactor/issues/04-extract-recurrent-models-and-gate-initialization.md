@@ -1,11 +1,11 @@
 # 04: Extract recurrent models and gate initialization
 
-Status: claimed
+Status: resolved
 Type: task
 Blocked by: 02
 
-**Approved specification:** [Refactoring specification](../../../docs/refactoring_spec.md)  
-**Architecture:** [Architecture proposal](../../../docs/architecture_proposal.md)  
+**Approved specification:** [Refactoring specification](../../../docs/refactoring_spec.md)
+**Architecture:** [Architecture proposal](../../../docs/architecture_proposal.md)
 **Source notebook:** [GradientVanishingAnalysis.ipynb](../../../Notebooks/GradientVanishingAnalysis.ipynb)
 
 **Shared preservation:** Keep the source notebook unchanged at SHA-256 `71ec17cdb7fffcc39fef12bfe4977f75117ceedaa90c03109e79f51d98059f44`; do not silently fix documented bugs; treat its saved outputs as unverified observations.
@@ -32,7 +32,7 @@ Models module, initialization and equation tests, baseline model fixture compari
 
 ## Acceptance criteria
 
-- [ ] Sequence-first input produces a scalar per batch item; Vanilla RNN, LSTM, and GRU one-step equations match independent calculations; custom GRU uses `(1-z)` for old state and `z` for candidate; `W_z` is the Update Gate linear layer and only `W_z.bias` receives the GRU retention-bias assignment; `W_r` is the Reset Gate layer.
+- [x] Sequence-first input produces a scalar per batch item; Vanilla RNN, LSTM, and GRU equations match independent calculations; custom GRU uses `(1-z)` for old state and `z` for candidate; `W_z` is the Update Gate linear layer and only `W_z.bias` receives the GRU retention-bias assignment; `W_r` is the Reset Gate layer.
 
 ## Required tests
 
@@ -44,4 +44,8 @@ Construct and initialize on CPU before device transfer; preserve constructor RNG
 
 ## Definition of Done
 
-- [ ] Every model builds and predicts in isolation, all equation/initialization tests pass, and notebook hash is unchanged.
+- [x] Every model builds and predicts in isolation, all equation/initialization tests pass, and notebook hash is unchanged.
+
+## Answer
+
+Extracted the three handwritten models and their initialization into [models.py](../../../src/gradient_vanishing/models.py). The factory constructs and initializes on CPU before moving to the requested device. Independent two-step equations and all directly executed model and gate fixtures pass in [test_models.py](../../../tests/test_models.py). The complete test suite passes (59 tests). The original notebook and immutable fixture SHA-256 hashes remain unchanged. The code review found two gaps, both addressed: independent equations now exercise recurrence, and the factory uses direct class selection without a registry.

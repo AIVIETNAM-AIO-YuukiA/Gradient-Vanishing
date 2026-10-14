@@ -103,9 +103,6 @@ class GRU_Tracker(TrackerBase):
         return self.W_out(h)
 
 
-MODEL_CLASSES = {"Vanilla RNN": VanillaRNN_Tracker, "LSTM": LSTM_Tracker, "GRU": GRU_Tracker}
-
-
 def apply_weight_init(model: TrackerBase, init_method: str) -> None:
     """Replace each matrix weight for orthogonal/Xavier modes; leave biases."""
     for name, parameter in model.named_parameters():
@@ -156,7 +153,14 @@ def build_model(
     ``init_method``. The experiment layer will map validated project config to
     these effective hyperparameters in a later ticket.
     """
-    model = MODEL_CLASSES[name](1, config["hidden_size"], 1)
+    if name == "Vanilla RNN":
+        model = VanillaRNN_Tracker(1, config["hidden_size"], 1)
+    elif name == "LSTM":
+        model = LSTM_Tracker(1, config["hidden_size"], 1)
+    elif name == "GRU":
+        model = GRU_Tracker(1, config["hidden_size"], 1)
+    else:
+        raise KeyError(name)
     apply_weight_init(model, config["init_method"])
     apply_gate_init(model, gate_init, T)
     return model.to(device=device, dtype=dtype)
