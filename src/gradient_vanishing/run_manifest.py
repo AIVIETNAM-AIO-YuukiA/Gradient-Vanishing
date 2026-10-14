@@ -73,6 +73,12 @@ def artifact_entry(run_dir: Path, file: Path, kind: str) -> dict[str, Any]:
 
 
 def source_revision() -> str | None:
+    try:
+        from gradient_vanishing._build_info import SOURCE_REVISION
+    except ImportError:
+        SOURCE_REVISION = None
+    if SOURCE_REVISION is not None:
+        return SOURCE_REVISION
     root = Path(__file__).resolve().parents[2]
     if not (root / ".git").exists():
         return None

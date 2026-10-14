@@ -3,6 +3,7 @@
 import csv
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -65,6 +66,7 @@ def test_real_reduced_pipeline_round_trip_and_repeatability(tmp_path):
         assert manifest["scope"] == "reduced_or_modified"
         assert manifest["effective_configuration"]["training"]["updates"] == 3
         assert manifest["environment"]["dependencies"]["torch"]
+        assert re.fullmatch(r"[0-9a-f]{40}", manifest["git_commit"])
         assert manifest["resolved_device"] == "cpu"
         assert manifest["notebook_reference_sha256"] == (
             "71ec17cdb7fffcc39fef12bfe4977f75117ceedaa90c03109e79f51d98059f44")
