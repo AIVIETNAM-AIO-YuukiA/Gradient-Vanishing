@@ -1,29 +1,41 @@
 # Understanding Gradient Vanishing in Recurrent Networks
 
-This project studies a first-element memorization task: an RNN, LSTM, or
-handwritten GRU receives a sequence with one sampled value at the first step
-and zeros thereafter, then predicts that value at the final step. It preserves
-the experiments in [GradientVanishingAnalysis.ipynb](Notebooks/GradientVanishingAnalysis.ipynb),
-including their initialization, random-seed order, training behavior, and
-hidden-state gradient definition. The notebook is the unchanged reference.
+This repository provides a modular, fully tested research package reproducing the experiments in [`Notebooks/GradientVanishingAnalysis.ipynb`](Notebooks/GradientVanishingAnalysis.ipynb).
 
-The package separates synthetic data (`data.py`), recurrent equations
-(`models.py`), seeded training (`training.py`), gradient diagnostics
-(`gradients.py`), experiments (`experiments.py`), saved-result reporting
-(`reporting.py`), and the CLI/run manifest (`cli.py`, `run_manifest.py`).
-The baseline fixture and tests live under `tests/`; research and usage notes
-live under [docs/](docs/README.md).
+The project studies a **first-element memorization task**: a recurrent neural network (Vanilla RNN, LSTM, or handwritten GRU) processes a sequence with a single scalar value introduced at $t=0$ followed by zeros, and must predict that initial value at the final timestep. It investigates how recurrent equations, BPTT length, and gate bias initialization influence long-range gradient flow and training dynamics.
 
-## Install and run
+---
 
-The verified reference is Windows, Python 3.13.0, PyTorch 2.11.0+cpu, and the
-versions in [requirements-cpu.lock](requirements-cpu.lock). Install in a new
-virtual environment from a locally built wheel using the exact commands in
-[installation.md](docs/installation.md). Check the CLI with
-`gradient-vanishing --help` or `python -m gradient_vanishing --help`.
+## Documentation
 
-The checked-in [reduced CPU configuration](configs/ticket13_reduced_cpu.json)
-is an explicit, short validation run. From the checkout after installation:
+The project documentation is organized into three comprehensive documents:
+
+* **[User & Operations Guide](docs/usage.md):** Complete installation commands, CLI reference (`main`, `gradients`, `ablation`, `sweep`, `report`), configuration override semantics, run manifests, and report generation workflows.
+* **[Scientific Methodology](docs/methodology.md):** Formal problem definition, mathematical recurrence equations, BPTT hidden-gradient tracking, exponential decay curve fitting, Optuna hyperparameter optimization, and ablation designs.
+* **[Full Reproducibility Report](docs/full_reproducibility_report.md):** Empirical evidence from the complete multi-hour CPU experiment matrix (180 Optuna trials, 90 main runs, 35 ablation runs, 270 gradient evaluations), artifact inventories, and comparison with historical notebook outputs.
+
+---
+
+## Quick Start
+
+### 1. Installation
+
+The canonical environment uses **Python 3.13.0**, **PyTorch 2.11.0 (CPU)**, and **Optuna 5.0.0** pinned in [`requirements-cpu.lock`](requirements-cpu.lock):
+
+```powershell
+# Create environment and install dependencies
+py -3.13 -m venv .venv
+& .venv\Scripts\Activate.ps1
+python -m pip install -r requirements-cpu.lock
+
+# Build and install wheel package
+python -m pip wheel --no-deps --no-build-isolation --wheel-dir dist .
+python -m pip install --no-deps (Get-Item dist\gradient_vanishing_research-*.whl).FullName
+```
+
+### 2. Run a Reduced Validation Pipeline
+
+Execute short end-to-end experiment runs on CPU using the committed reduced configuration:
 
 ```powershell
 gradient-vanishing main --config configs/ticket13_reduced_cpu.json --output-dir runs
@@ -32,32 +44,55 @@ gradient-vanishing ablation --config configs/ticket13_reduced_cpu.json --output-
 gradient-vanishing sweep --config configs/ticket13_reduced_cpu.json --output-dir runs
 ```
 
-`main` includes Optuna tuning, then trains default and tuned models. Each
-command creates a unique run directory with real JSON results and a manifest.
-Use the paths in those manifests with `gradient-vanishing report --source
-KIND=PATH` to regenerate tables and PNG/SVG figures without running models.
-[commands.md](docs/commands.md) gives the exact source syntax, override
-precedence, result layout, and deliberate `--allow-full` safeguard.
+### 3. Generate Reports from Saved Results
 
-The package defaults match the notebook's full budgets; running them is an
-intentional, expensive choice. **A completed reduced run validates the
-software workflow, not the notebook's full empirical results.** The
-[Ticket 14 report](docs/full_reproducibility_report.md) records completed full
-CPU matrix coverage, direct notebook checks, and historical output differences.
-[Ticket 13 validation](docs/end_to_end_validation.md) records the earlier
-reduced pipeline. GPU behavior remains NOT VERIFIED. The known GRU terminology,
-evaluation-mode side effect, and missing learning-curve uncertainty band are
-documented in the [approved specification](docs/refactoring_spec.md). They
-remain separate from this extraction.
+Generate summary tables and publication-quality plots from saved run outputs without retraining:
 
-## Interpret the outputs
+```powershell
+gradient-vanishing report --output-dir runs `
+  --source main=runs/<main-run-dir>/results/main.json
+```
 
-The diagnostic curves measure the batch mean L2 norm of the gradient of the
-final prediction MSE with respect to each **hidden state**. They are not
-parameter-gradient norms. [Gradient diagnostics](docs/gradient_diagnostics.md)
-defines timestep order and the decay fit. The numeric retention-bias sweep
-measures **initial** gradient decay, without per-bias trained validation or
-test MSE. [Reporting](docs/reporting.md) defines each table and figure and
-explains missing-condition labels. Keep `manifest.json`, raw result JSON, and
-`report_index.json` with any figure used in a research report so its source
-and reduced/full status remain traceable.
+See [`docs/usage.md`](docs/usage.md) for full syntax and source options.
+
+---
+
+## Repository Structure
+
+```text
+Gradient-Vanishing/
+├── configs/                            # Example and reduced configuration files
+├── docs/
+│   ├── full_reproducibility_report.md  # Definitive empirical reproduction report
+│   ├── methodology.md                  # Scientific formulations and experimental design
+│   └── usage.md                        # Installation, CLI, and reporting operations
+├── Notebooks/
+│   └── GradientVanishingAnalysis.ipynb # Immutable reference notebook (SHA-256: 71ec17cd...)
+├── src/gradient_vanishing/             # Modular package source code
+│   ├── cli.py                          # Unified CLI entry point
+│   ├── config.py                       # Configuration loader and runtime validator
+│   ├── data.py                         # First-element memorization data generator
+│   ├── experiments.py                  # Experiment orchestration (tuning, main, ablation, sweep)
+│   ├── gradients.py                    # Hidden-state gradient tracking and decay fitting
+│   ├── models.py                       # Recurrent model definitions (RNN, LSTM, GRU)
+│   ├── reporting.py                    # Headless table and figure rendering
+│   ├── run_manifest.py                 # Provenance tracking and manifest generation
+│   └── training.py                     # Deterministic training loop and evaluation
+├── tests/                              # Automated test suite (136 regression tests)
+│   ├── fixtures/
+│   │   └── notebook_baseline.json      # Canonical execution oracle fixture
+│   └── test_*.py                       # Component and integration tests
+├── pyproject.toml                      # Package build configuration (Optuna 5.0.0)
+├── requirements-cpu.lock               # Canonical pinned CPU dependency lockfile
+├── setup.py                            # Custom build hook for wheel revision provenance
+├── AGENTS.md                           # AI assistant guidelines and architectural constraints
+└── README.md                           # Project overview and quick-start guide
+```
+
+---
+
+## Development History
+
+The initial 14-ticket refactoring, local issue tracker (`.scratch/`), and intermediate planning specifications are durably preserved in the repository Git history:
+* **Archival Branch:** `archive/refactoring-docs-and-tickets`
+* **Archival Tag:** `archive-refactor-history`

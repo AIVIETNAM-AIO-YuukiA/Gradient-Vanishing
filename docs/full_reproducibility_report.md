@@ -76,7 +76,7 @@ The combined report directory contains `main_summary.csv` (nine rows), `gate_abl
 
 ## Reproduction procedure
 
-From a clean checkout of source commit `8298ac7`, use the pinned CPU lock and build/install a non-editable wheel as in [installation.md](installation.md). Verify the wheel's embedded commit, `pip check`, notebook/fixture hashes, at least 4 GiB available RAM, at least 1 GiB free disk, and that no duplicate full run is active. These are the exact stage invocations used on this machine; for a new execution, choose a new unique `$root`:
+From a clean checkout of source commit `8298ac7`, use the pinned CPU lock and build/install a non-editable wheel as in [usage.md](usage.md). Verify the wheel's embedded commit, `pip check`, notebook/fixture hashes, at least 4 GiB available RAM, at least 1 GiB free disk, and that no duplicate full run is active. These are the exact stage invocations used on this machine; for a new execution, choose a new unique `$root`:
 
 ```powershell
 $projectRoot = 'D:\ILPT\Project\Gradient-Vanishing'
